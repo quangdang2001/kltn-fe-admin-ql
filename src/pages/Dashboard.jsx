@@ -151,11 +151,8 @@ const Dashboard = () => {
   const { users } = useSelector((state) => state.topOrder);
   const { orders } = useSelector((state) => state.lastOrder);
   const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin;
-  const history = useHistory();
-  useEffect(() => {
-    if (!userInfo || !userInfo.data.user.isAdmin) history.push("/login");
 
+  useEffect(() => {
     dispatch(getCards());
     dispatch(getLastOrders());
     dispatch(getTopOrders());
