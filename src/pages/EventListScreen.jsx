@@ -8,9 +8,10 @@ import { Link } from "react-router-dom";
 
 import FetchApiState from "../components/alert/FetchApiStateEvent";
 import EventsFilter from "../components/event/EventsFilter";
+import { useHistory } from "react-router-dom";
 
 const EventListScreen = (props) => {
-  const { history } = props;
+  const history = useHistory();
   const dispatch = useDispatch();
   const { events } = useSelector((state) => state.eventList);
   const userLogin = useSelector((state) => state.userLogin);
