@@ -203,7 +203,7 @@ const Dashboard = () => {
     <div>
       <h2 className="page-header">Dashboard</h2>
       <div className="row">
-        <div className="col-6">
+        <div className="col-12">
           <div className="row">
             {cards &&
               cards.map((item, index) => (
@@ -217,9 +217,11 @@ const Dashboard = () => {
               ))}
           </div>
         </div>
+
+        {/*         
         <div className="col-6">
           <div className="card full-height">
-            {/* chart */}
+   
             <Chart
               options={
                 themeReducer === "theme-mode-dark"
@@ -232,13 +234,14 @@ const Dashboard = () => {
                       theme: { mode: "light" },
                     }
               }
-              series={chartOptions.series}
+                series={chartOptions.series}
               type="line"
               height="100%"
             />
           </div>
-        </div>
-        <div className="col-4">
+        </div> */}
+
+        <div className="col-12">
           <div className="card">
             <div className="card__header">
               <h3>top customers</h3>
@@ -258,7 +261,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="col-8">
+        <div className="col-12">
           <div className="card">
             <div className="card__header">
               <h3>latest orders</h3>

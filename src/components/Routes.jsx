@@ -54,7 +54,7 @@ const Routes = () => {
       <Route path="/orders/:pageNumber" component={OrderListScreen} exact />
 
       <Route path="/order/:id" component={OrderScreen} exact />
-      <Route path="/chats" component={ChatPage}/>
+      <Route path="/chats" component={ChatPage} />
       <main className="py-3">
         <Container>
           <Route path="/login" component={LoginScreen} exact />
