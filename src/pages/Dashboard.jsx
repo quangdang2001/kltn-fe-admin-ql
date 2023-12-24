@@ -1,52 +1,49 @@
-import React, { useEffect } from "react";
-
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
 import Chart from "react-apexcharts";
-
 import { useDispatch, useSelector } from "react-redux";
-
 import StatusCard from "../components/status-card/StatusCard";
-
 import Table from "../components/table/Table";
-
 import Badge from "../components/badge/Badge";
 import { useHistory } from "react-router-dom";
 import {
   getCards,
+  getCategoryTrending,
   getLastOrders,
+  getProductTrending,
   getTopOrders,
 } from "../actions/dashboardActions";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+} from "chart.js";
+import { Doughnut, Bar } from "react-chartjs-2";
+import {
+  Row,
+  Col,
+  Form,
+  Dropdown,
+  Button,
+  OverlayTrigger,
+} from "react-bootstrap";
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+);
 
 const topCustomers = {
   head: ["user", "total orders", "total spending"],
-  body: [
-    {
-      username: "john doe",
-      order: "490",
-      price: "$15,870",
-    },
-    {
-      username: "frank iva",
-      order: "250",
-      price: "$12,251",
-    },
-    {
-      username: "anthony baker",
-      order: "120",
-      price: "$10,840",
-    },
-    {
-      username: "frank iva",
-      order: "110",
-      price: "$9,251",
-    },
-    {
-      username: "anthony baker",
-      order: "80",
-      price: "$8,840",
-    },
-  ],
 };
 
 const renderCusomerHead = (item, index) => <th key={index}>{item}</th>;
@@ -67,43 +64,6 @@ const renderCusomerBody = (item, index) => (
 
 const latestOrders = {
   header: ["order id", "user", "total price", "date", "status"],
-  body: [
-    {
-      id: "#OD1711",
-      user: "john doe",
-      date: "17 Jun 2021",
-      price: "$900",
-      status: "shipping",
-    },
-    {
-      id: "#OD1712",
-      user: "frank iva",
-      date: "1 Jun 2021",
-      price: "$400",
-      status: "paid",
-    },
-    {
-      id: "#OD1713",
-      user: "anthony baker",
-      date: "27 Jun 2021",
-      price: "$200",
-      status: "pending",
-    },
-    {
-      id: "#OD1712",
-      user: "frank iva",
-      date: "1 Jun 2021",
-      price: "$400",
-      status: "paid",
-    },
-    {
-      id: "#OD1713",
-      user: "anthony baker",
-      date: "27 Jun 2021",
-      price: "$200",
-      status: "refund",
-    },
-  ],
 };
 
 const orderStatus = {
@@ -144,19 +104,117 @@ const renderOrderBody = (item, index) => (
   </tr>
 );
 
+const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top",
+    },
+    title: {
+      display: false,
+      text: "Product Trending",
+    },
+  },
+};
+
+const lastDaysProductTrending = [
+  { name: "7 days", value: 7 },
+  { name: "30 days", value: 30 },
+  { name: "90 days", value: 90 },
+  { name: "360 days", value: 360 },
+];
+
+const lastDaysCateTrending = [
+  { name: "30 days", value: 30 },
+  { name: "90 days", value: 90 },
+  { name: "360 days", value: 360 },
+  { name: "All days", value: 9999 },
+];
+
 const Dashboard = () => {
+  const [lastDateProduct, setLastDateProduct] = useState({ name: "7 days", value: 7 })
+  const [lastDateCate, setLastDateCate] = useState({ name: "All days", value: 9999 })
   const dispatch = useDispatch();
   const cardsReducer = useSelector((state) => state.cardsReducer);
   const { cards } = cardsReducer;
   const { users } = useSelector((state) => state.topOrder);
   const { orders } = useSelector((state) => state.lastOrder);
+  const { cateTrendings } = useSelector((state) => state.cateTrending);
+  const { productTrendings } = useSelector((state) => state.productTrending);
+
   const userLogin = useSelector((state) => state.userLogin);
 
   useEffect(() => {
     dispatch(getCards());
     dispatch(getLastOrders());
     dispatch(getTopOrders());
+    dispatch(getProductTrending(lastDateProduct.value));
+    dispatch(getCategoryTrending(9999));
   }, []);
+
+  const getProductTrendingData = () => {
+    const labels = productTrendings?.map((product) => product._id);
+    const data = {
+      labels,
+      datasets: [
+        {
+          label: "Number of order",
+          data: productTrendings?.map((product) => product.countOrder),
+          backgroundColor: "rgba(4, 59, 92, 1)",
+
+        },
+        {
+          label: "Revenue",
+          data: productTrendings?.map((product) => product.sumRevenue),
+          backgroundColor: "rgba(220,20,60, 1)",
+          hidden: true,
+        },
+      ],
+    };
+    return data;
+  };
+
+  const getCateTrendingData = () => {
+    console.log("CATE TRENDING", cateTrendings)
+    const labels = cateTrendings?.map(item => item._id);
+    const data = {
+      labels: labels ? labels : [],
+      datasets: [
+        {
+          label: 'Number of order',
+          data: cateTrendings?.map(item => item.countOrder),
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)',
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)',
+          ],
+          borderWidth: 1,
+        },
+      ],
+    };
+    return data;
+  };
+
+  const getProductTrendingLastDate = (lastDate) => {
+    setLastDateProduct(lastDate)
+    dispatch(getProductTrending(lastDate.value));
+  }
+
+  const getCategoryTrendingLastDate = (lastDate) => {
+    setLastDateCate(lastDate)
+    dispatch(getCategoryTrending(lastDate.value));
+  }
   return (
     <div>
       <h2 className="page-header">Dashboard</h2>
@@ -175,29 +233,69 @@ const Dashboard = () => {
               ))}
           </div>
         </div>
-
-        {/*         
-        <div className="col-6">
-          <div className="card full-height">
-   
-            <Chart
-              options={
-                themeReducer === "theme-mode-dark"
-                  ? {
-                      ...chartOptions.options,
-                      theme: { mode: "dark" },
-                    }
-                  : {
-                      ...chartOptions.options,
-                      theme: { mode: "light" },
-                    }
-              }
-                series={chartOptions.series}
-              type="line"
-              height="100%"
-            />
+        <div className="col-12">
+          <div className="card">
+            <div
+              className="card__header"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <div className="col-6">
+                <h3>Product Trending</h3>
+              </div>
+              <Dropdown>
+                <Dropdown.Toggle>{lastDateProduct.name}</Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {lastDaysProductTrending.map((item) => (
+                    <Dropdown.Item onClick={() => getProductTrendingLastDate(item)}>{item.name}</Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+            <div
+              className="card__body"
+              style={{ display: "flex", justifyContent: "center" }}
+            >
+              <Bar options={options} data={getProductTrendingData()} />
+            </div>
           </div>
-        </div> */}
+        </div>
+
+        <div className="col-12">
+          <div className="card">
+            <div
+              className="card__header"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <div className="col-6">
+                <h3>Category Trending</h3>
+              </div>
+              <Dropdown>
+                <Dropdown.Toggle>{lastDateCate.name}</Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {lastDaysCateTrending.map((item) => (
+                    <Dropdown.Item onClick={() => getCategoryTrendingLastDate(item)}>{item.name}</Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+            <div
+              className="card__body"
+              style={{ display: "flex", justifyContent: "center" }}
+            >
+              <div className="col-6">
+                <Doughnut data={getCateTrendingData()} />
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div className="col-12">
           <div className="card">

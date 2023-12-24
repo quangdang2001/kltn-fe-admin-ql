@@ -38,6 +38,8 @@ import {
   cardsReducer,
   topOrderReducer,
   lastOrderReducer,
+  productTrendingReducer,
+  cateTrendingReducer
 } from './reducers/dashboardReducers'
 // Event reducer
 import {
@@ -84,6 +86,8 @@ const reducer = combineReducers({
   cardsReducer: cardsReducer,
   topOrder: topOrderReducer,
   lastOrder: lastOrderReducer,
+  productTrending: productTrendingReducer,
+  cateTrending: cateTrendingReducer,
   orderList: orderListReducer,
   orderPay: orderPayReducer,
   orderDetail: orderDetailReducer,
