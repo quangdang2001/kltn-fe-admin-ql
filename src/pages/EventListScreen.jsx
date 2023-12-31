@@ -8,10 +8,10 @@ import { Link } from "react-router-dom";
 
 import FetchApiState from "../components/alert/FetchApiStateEvent";
 import EventsFilter from "../components/event/EventsFilter";
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 
 const EventListScreen = (props) => {
-  const history = useHistory();
+  // const history = useHistory();
   const dispatch = useDispatch();
   const { events } = useSelector((state) => state.eventList);
   const userLogin = useSelector((state) => state.userLogin);
@@ -19,8 +19,8 @@ const EventListScreen = (props) => {
 
   useEffect(() => {
     if (userInfo && userInfo.data.user.isAdmin) dispatch(getEvents());
-    else history.push("/login");
-  }, [dispatch, history, userInfo]);
+    // else history.push("/login");
+  }, [dispatch, userInfo]);
 
   return (
     <>
@@ -29,7 +29,7 @@ const EventListScreen = (props) => {
       {/* Filter */}
 
       <EventsFilter />
-      {events && events.length > 0 && (
+      { (
         <>
           {/* TABLE DATA INFO */}
           <Table striped bordered hover responsive className="table-sm">
@@ -46,7 +46,7 @@ const EventListScreen = (props) => {
               </tr>
             </thead>
             <tbody>
-              {events &&
+              {events && events.length > 0 &&
                 events?.length > 0 &&
                 events?.map((event) => (
                   <tr key={event._id}>
