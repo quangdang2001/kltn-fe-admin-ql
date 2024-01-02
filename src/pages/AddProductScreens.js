@@ -161,6 +161,17 @@ const AddProductScreens = ({ history, match, location }) => {
 
     dispatch(addToOption(optionItems))
   }
+
+  const onPriceChange = (e) => {
+    optionItems[optionIndex].price = e.target.value;
+    setPrice(e.target.value)
+  }
+
+  const onQuantityChange = (e) => {
+    optionItems[optionIndex].colors[colorIndex].quantity = e.target.value;
+    setStock(e.target.value)
+  }
+
   const submitHandler = (e) => {
     e.preventDefault()
     const formData = new Object()
@@ -168,7 +179,10 @@ const AddProductScreens = ({ history, match, location }) => {
     formData.manufacturer = manufactureId
     formData.subCategory = subCategoryId
     formData.description = description
+    formData.price = price;
     formData.productOptions = optionItems
+    const quantities = optionItems.map(option => option.colors.reduce((n, {quantity}) => n + +quantity, 0));
+    formData.quantity = quantities.reduce((sum, value) => sum + value)
     dispatch(createProduct(formData))
   }
   return (
@@ -432,7 +446,7 @@ const AddProductScreens = ({ history, match, location }) => {
                           type='number'
                           className='form-control count d-inline'
                           value={stock}
-                          onChange={(e) => setStock(e.target.value)}
+                          onChange={(e) => onQuantityChange(e)}
                         />
                       </Col>
                     </Row>
@@ -447,7 +461,7 @@ const AddProductScreens = ({ history, match, location }) => {
                           type='number'
                           className='form-control count d-inline'
                           value={price}
-                          onChange={(e) => setPrice(e.target.value)}
+                          onChange={(e) => onPriceChange(e)}
                         />
                       </Col>
                     </Row>
