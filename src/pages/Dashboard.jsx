@@ -81,6 +81,14 @@ const orderStatus = {
 
 const renderOrderHead = (item, index) => <th key={index}>{item}</th>;
 
+const convertTimeVNTime = (time) => {
+  let date = new Date(time);
+  let vnTime = date.toLocaleString("vi-VN", {
+    timeZone: "Asia/Ho_Chi_Minh",
+  });
+  return vnTime;
+};
+
 const renderOrderBody = (item, index) => (
   <tr key={index}>
     <td>
@@ -93,7 +101,7 @@ const renderOrderBody = (item, index) => (
       <b>{item?.totalPrice}</b>
     </td>
     <td>
-      <b>{item?.createdAt}</b>
+      <b>{convertTimeVNTime(item?.createdAt)}</b>
     </td>
     <td>
       <Badge
