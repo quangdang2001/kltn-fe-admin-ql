@@ -11,7 +11,7 @@ import EventsFilter from "../components/event/EventsFilter";
 // import { useHistory } from "react-router-dom";
 
 const EventListScreen = (props) => {
-  // const history = useHistory();
+  const {history} = props ;
   const dispatch = useDispatch();
   const { events } = useSelector((state) => state.eventList);
   const userLogin = useSelector((state) => state.userLogin);
@@ -19,7 +19,7 @@ const EventListScreen = (props) => {
 
   useEffect(() => {
     if (userInfo && userInfo.data.user.isAdmin) dispatch(getEvents());
-    // else history.push("/login");
+    else history.push("/login");
   }, [dispatch, userInfo]);
 
   return (

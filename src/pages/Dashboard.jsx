@@ -131,7 +131,7 @@ const lastDaysCateTrending = [
   { name: "All days", value: 9999 },
 ];
 
-const Dashboard = () => {
+const Dashboard = ({history}) => {
   const [lastDateProduct, setLastDateProduct] = useState({ name: "7 days", value: 7 })
   const [lastDateCate, setLastDateCate] = useState({ name: "All days", value: 9999 })
   const dispatch = useDispatch();
@@ -141,10 +141,18 @@ const Dashboard = () => {
   const { orders } = useSelector((state) => state.lastOrder);
   const { cateTrendings } = useSelector((state) => state.cateTrending);
   const { productTrendings } = useSelector((state) => state.productTrending);
-
   const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+  const isAdmin = () => {
+    if (userInfo && userInfo.data.user.isAdmin) {
+        return true;
+    }
+  };
 
   useEffect(() => {
+    if (!isAdmin()) {
+      history.push("/login")
+    }
     dispatch(getCards());
     dispatch(getLastOrders());
     dispatch(getTopOrders());
@@ -162,20 +170,28 @@ const Dashboard = () => {
           data: productTrendings?.map((product) => product.countOrder),
           backgroundColor: "rgba(4, 59, 92, 1)",
 
-        },
-        {
-          label: "Revenue",
-          data: productTrendings?.map((product) => product.sumRevenue),
-          backgroundColor: "rgba(220,20,60, 1)",
-          hidden: true,
-        },
+        }
       ],
     };
     return data;
   };
 
+  const getProductRevenueTrending = () => {
+    const labels = productTrendings?.map((product) => product._id);
+    const data = {
+      labels,
+      datasets: [
+        {
+          label: "Revenue",
+          data: productTrendings?.map((product) => product.sumRevenue),
+          backgroundColor: "rgba(220,20,60, 1)"
+        },
+      ],
+    };
+    return data;
+  }
+
   const getCateTrendingData = () => {
-    console.log("CATE TRENDING", cateTrendings)
     const labels = cateTrendings?.map(item => item._id);
     const data = {
       labels: labels ? labels : [],
@@ -259,7 +275,13 @@ const Dashboard = () => {
               className="card__body"
               style={{ display: "flex", justifyContent: "center" }}
             >
-              <Bar options={options} data={getProductTrendingData()} />
+              <Bar data={getProductTrendingData()} />
+            </div>
+            <div
+              className="card__body"
+              style={{ display: "flex", justifyContent: "center" }}
+            >
+              <Bar data={getProductRevenueTrending()} />
             </div>
           </div>
         </div>

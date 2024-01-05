@@ -12,7 +12,6 @@ import OrderScreen from "../pages/OrderScreen";
 import ProductTrashScreen from "../pages/ProductTrashScreen";
 import UserEditScreen from "../pages/UserEditScreen";
 import UserTrashScreen from "../pages/UserTrashScreen";
-import AnalyticsScreen from "../pages/AnalyticsScreen";
 import AddProductScreens from "../pages/AddProductScreens";
 import ProductEditScreen from "../pages/ProductEditScreen";
 import ChatPage from "../pages/ChatPage";
@@ -22,7 +21,6 @@ const Routes = () => {
   return (
     <Switch>
       <Route path="/" component={Dashboard} exact />
-      <Route path="/analytics" component={AnalyticsScreen} exact />
       <Route path="/customersTrash" component={UserTrashScreen} exact />
       <Route
         path="/customersTrash/:pageNumber"
@@ -58,7 +56,6 @@ const Routes = () => {
       <main className="py-3">
         <Container>
           <Route path="/login" component={LoginScreen} exact />
-          <Route path="*" component={PageNotFound} />
         </Container>
       </main>
     </Switch>

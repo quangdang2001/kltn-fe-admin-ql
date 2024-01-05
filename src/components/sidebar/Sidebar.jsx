@@ -1,51 +1,53 @@
-import React from 'react'
+import React from "react";
+import { Link } from "react-router-dom";
+import "./sidebar.css";
+import logo from "../../assets/images/logoCLC.png";
+import sidebar_items from "../../assets/JsonData/sidebar_routes.json";
+import { useDispatch, useSelector } from "react-redux";
 
-import { Link } from 'react-router-dom'
+const SidebarItem = (props) => {
+  const active = props.active ? "active" : "";
 
-import './sidebar.css'
+  return (
+    <div className="sidebar__item">
+      <div className={`sidebar__item-inner ${active}`}>
+        <i className={props.icon}></i>
+        <span>{props.title}</span>
+      </div>
+    </div>
+  );
+};
 
-import logo from '../../assets/images/logoCLC.png'
+const Sidebar = (props) => {
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+  const activeItem = sidebar_items.findIndex(
+    (item) => item.route === props.location.pathname
+  );
+  const isAdmin = () => {
+    if (userInfo && userInfo.data.user.isAdmin) {
+        return true;
+    }
+  };
+  if (!isAdmin()) {
+    return <div></div>
+  }
+  return (
+    <div className="sidebar">
+      <div className="sidebar__logo">
+        <img src={logo} alt="company logo" />
+      </div>
+      {sidebar_items.map((item, index) => (
+        <Link to={item.route} key={index}>
+          <SidebarItem
+            title={item.display_name}
+            icon={item.icon}
+            active={index === activeItem}
+          />
+        </Link>
+      ))}
+    </div>
+  );
+};
 
-import sidebar_items from '../../assets/JsonData/sidebar_routes.json'
-
-const SidebarItem = props => {
-
-    const active = props.active ? 'active' : ''
-
-    return (
-        <div className="sidebar__item">
-            <div className={`sidebar__item-inner ${active}`}>
-                <i className={props.icon}></i>
-                <span>
-                    {props.title}
-                </span>
-            </div>
-        </div>
-    )
-}
-
-const Sidebar = props => {
-
-    const activeItem = sidebar_items.findIndex(item => item.route === props.location.pathname)
-
-    return (
-        <div className='sidebar'>
-            <div className="sidebar__logo">
-                <img src={logo} alt="company logo" />
-            </div>
-            {
-                sidebar_items.map((item, index) => (
-                    <Link to={item.route} key={index}>
-                        <SidebarItem
-                            title={item.display_name}
-                            icon={item.icon}
-                            active={index === activeItem}
-                        />
-                    </Link>
-                ))
-            }
-        </div>
-    )
-}
-
-export default Sidebar
+export default Sidebar;
