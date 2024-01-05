@@ -38,7 +38,7 @@ const renderUserToggle = (user) => (
 
 
 const Topnav = () => {
-    const history = useHistory()
+    // const history = useHistory()
     const renderUserMenu = (item, index) => (
         <Link onClick={logoutHandler} key={index}>
             <div className="notification-item">
@@ -51,7 +51,7 @@ const Topnav = () => {
     const userLogin = useSelector((state) => state.userLogin)
     const { userInfo } = userLogin
     const logoutHandler = () => {
-        history.push("/login")
+        // history.push("/login")
         dispatch(logout())
     }
     return (
