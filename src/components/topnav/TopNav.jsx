@@ -1,7 +1,7 @@
 import React from 'react'
 import './topnav.css'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import {  Nav } from 'react-bootstrap'
 import Dropdown from '../dropdown/Dropdown'
@@ -38,6 +38,7 @@ const renderUserToggle = (user) => (
 
 
 const Topnav = () => {
+    const history = useHistory()
     const renderUserMenu = (item, index) => (
         <Link onClick={logoutHandler} key={index}>
             <div className="notification-item">
@@ -50,6 +51,7 @@ const Topnav = () => {
     const userLogin = useSelector((state) => state.userLogin)
     const { userInfo } = userLogin
     const logoutHandler = () => {
+        history.push("/login")
         dispatch(logout())
     }
     return (
